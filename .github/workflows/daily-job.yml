@@ -1,0 +1,30 @@
+name: Consulta diária de rastreio
+
+on:
+  schedule:
+    - cron: '0 11 * * *' # 08:00 em São Paulo durante UTC-3; ajuste em horário de verão.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rastrear:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: node jobs/daily.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BLING_CLIENT_ID: ${{ secrets.BLING_CLIENT_ID }}
+          BLING_CLIENT_SECRET: ${{ secrets.BLING_CLIENT_SECRET }}
+          BLING_REFRESH_TOKEN: ${{ secrets.BLING_REFRESH_TOKEN }}
+          CORREIOS_USUARIO: ${{ secrets.CORREIOS_USUARIO }}
+          CORREIOS_CHAVE_ACESSO_DELEGADA: ${{ secrets.CORREIOS_CHAVE_ACESSO_DELEGADA }}
+          CORREIOS_CARTAO_POSTAGEM: ${{ secrets.CORREIOS_CARTAO_POSTAGEM }}
