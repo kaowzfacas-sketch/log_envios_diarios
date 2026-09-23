@@ -22,10 +22,16 @@ supabase/migrations/         # schema e RLS
 2. Em **Authentication > Providers**, habilite e-mail/senha. Em **Users**, crie/convide somente as 3–4 pessoas da equipe. Mantenha confirmação de e-mail conforme sua política interna.
 3. Em **GitHub > Settings > Secrets and variables > Actions**, cadastre os **secrets** abaixo. Nunca cadastre qualquer um deles no frontend.
 4. Na mesma página, em **Variables**, cadastre as duas variáveis públicas do frontend. Elas serão embutidas no bundle, portanto somente URL e anon key podem ficar aqui.
-5. Em **Settings > Pages > Build and deployment**, escolha **GitHub Actions**. Faça push na branch `main` para publicar.
-6. Rode manualmente o workflow **Consulta diária de rastreio** uma vez para validar as credenciais e criar o primeiro log.
+5. Abra **Settings > Pages** do repositório e, em **Build and deployment**, escolha **GitHub Actions**. É necessário salvar essa configuração antes da primeira execução do workflow; ela cria/habilita o site do GitHub Pages para o repositório.
+6. Faça push na branch `main` (ou execute **Publicar frontend no GitHub Pages** manualmente) e aguarde todas as etapas concluírem.
+7. Após o deploy, acesse `https://kaowzfacas-sketch.github.io/log_envios_diarios/`.
+8. Rode manualmente o workflow **Consulta diária de rastreio** uma vez para validar as credenciais e criar o primeiro log.
 
 > O `base` do Vite contém `/log_envios_diarios/`. Se o nome do repositório mudar, altere `vite.config.js` antes do deploy.
+
+### Erro `Creating Pages deployment failed` com status `404`
+
+Esse erro acontece antes de o site ser publicado: o build e o artefato podem ter sido gerados corretamente, mas o GitHub ainda não habilitou o Pages para o repositório. Abra [Settings > Pages](https://github.com/kaowzfacas-sketch/log_envios_diarios/settings/pages), selecione **GitHub Actions** em **Build and deployment**, salve e reexecute o workflow **Publicar frontend no GitHub Pages**. Não é um erro do React nem das variáveis do Supabase.
 
 ## GitHub Actions secrets (job diário)
 
