@@ -55,6 +55,8 @@ Esse erro acontece antes de o site ser publicado: o build e o artefato podem ter
 
 Para desenvolvimento local, copie `.env.example` para `.env` e preencha somente essas duas variáveis. Rode `npm install` e `npm run dev`.
 
+Se a página exibir `Invalid supabaseUrl`, confira o valor de `VITE_SUPABASE_URL` em **Settings > Secrets and variables > Actions > Variables**. Ele deve ser a URL completa do projeto, começando com `https://` (por exemplo, `https://abc123.supabase.co`), sem aspas, espaços ou o placeholder `SEU-PROJETO`. O frontend agora mostra a tela de configuração, em vez de falhar ao iniciar, quando a URL não for HTTP(S).
+
 ## Operação e segurança
 
 O job busca pedidos alterados nos últimos três dias, insere rastreios novos como pendentes, consulta todos os pendentes nos Correios em grupos de no máximo 50 e move os objetos com evento `PO` para confirmados. Cada tentativa (inclusive com erro) é gravada em `log_execucoes`.
