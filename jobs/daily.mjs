@@ -14,9 +14,23 @@ async function api(url, options = {}) {
 }
 const basic = (username, password) => `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`
 
+class BlingRefreshTokenError extends Error {
+  constructor(cause) {
+    super('Não foi possível autenticar no Bling: o refresh token foi recusado. Gere um novo refresh token para este mesmo aplicativo e atualize o secret BLING_REFRESH_TOKEN no GitHub antes de executar o workflow novamente.')
+    this.name = 'BlingRefreshTokenError'
+    this.cause = cause
+  }
+}
+
 async function blingToken() {
   const body = new URLSearchParams({ grant_type: 'refresh_token', refresh_token: process.env.BLING_REFRESH_TOKEN })
-  const data = await api('https://www.bling.com.br/Api/v3/oauth/token', { method: 'POST', headers: { Authorization: basic(process.env.BLING_CLIENT_ID, process.env.BLING_CLIENT_SECRET), 'Content-Type': 'application/x-www-form-urlencoded' }, body })
+  let data
+  try {
+    data = await api('https://www.bling.com.br/Api/v3/oauth/token', { method: 'POST', headers: { Authorization: basic(process.env.BLING_CLIENT_ID, process.env.BLING_CLIENT_SECRET), 'Content-Type': 'application/x-www-form-urlencoded' }, body })
+  } catch (error) {
+    if (error.message.includes('HTTP 400') && error.message.includes('invalid_grant')) throw new BlingRefreshTokenError(error)
+    throw error
+  }
   return data.access_token
 }
 async function correiosToken() {
