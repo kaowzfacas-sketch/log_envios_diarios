@@ -46,6 +46,14 @@ Esse erro acontece antes de o site ser publicado: o build e o artefato podem ter
 | `CORREIOS_CHAVE_ACESSO_DELEGADA` | Chave delegada — não use o código mestre. |
 | `CORREIOS_CARTAO_POSTAGEM` | Número do cartão de postagem. |
 
+### Erro `invalid_grant` do Bling
+
+O erro `Invalid refresh token` no workflow não é causado pelo runner, pelo Node.js nem pelos Correios: o valor salvo em `BLING_REFRESH_TOKEN` foi recusado pelo OAuth do Bling. Ele não pode ser corrigido pelo código do job, pois o GitHub Actions recebe os secrets somente para leitura.
+
+Para recuperar a execução, autorize novamente **o mesmo aplicativo OAuth do Bling** e obtenha um novo refresh token. Em seguida, abra **Settings > Secrets and variables > Actions > Secrets** no repositório, edite `BLING_REFRESH_TOKEN`, cole o novo valor sem aspas nem espaços e execute **Consulta diária de rastreio** manualmente. Não altere `BLING_CLIENT_ID` nem `BLING_CLIENT_SECRET` ao menos que também tenha recriado o aplicativo; o refresh token precisa pertencer a esse par de credenciais.
+
+O job agora identifica esse caso explicitamente e encerra sem consultar ou alterar pedidos. O valor do token nunca é mostrado no log.
+
 ## GitHub Actions variables (build público)
 
 | Nome | Uso |
